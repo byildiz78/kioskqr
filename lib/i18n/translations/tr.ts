@@ -6,7 +6,7 @@ export const tr = {
     total: "Toplam Tutar",
     addToCart: "Sepete Ekle",
     viewMenu: "Menüyü Görüntüle",
-    placeOrder: "Sipariş Ver",
+    placeOrder: "Ödeme Yap",
     categories: "Kategoriler",
     products: "Ürünler",
     notFound: "Sonuç Bulunamadı",

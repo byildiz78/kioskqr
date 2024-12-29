@@ -6,10 +6,12 @@ import { useCartStore } from "@/store/cart";
 import { useLanguageStore } from "@/store/language";
 import { motion } from "framer-motion";
 import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function CartTotal() {
   const { total } = useCartStore();
   const { t } = useLanguageStore();
+  const router = useRouter();
 
   return (
     <motion.div
@@ -28,7 +30,11 @@ export function CartTotal() {
           </div>
         </div>
       </div>
-      <Button size="lg" className="w-full h-12 text-lg gap-2 group">
+      <Button 
+        size="lg" 
+        className="w-full h-12 text-lg gap-2 group"
+        onClick={() => router.push('/payment')}
+      >
         {t.common.placeOrder}
         <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
       </Button>
