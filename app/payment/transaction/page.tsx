@@ -45,7 +45,7 @@ export default function PaymentTransactionPage() {
 
   return (
     <div className="min-h-screen bg-[url('/patterns/topography.svg')] bg-fixed">
-      <div className="min-h-screen backdrop-blur-xl bg-background/80">
+      <div className="min-h-screen backdrop-blur-xl bg-gradient-to-b from-background/95 via-background/80 to-background/95">
         <div className="container mx-auto px-4 py-8 max-w-3xl min-h-screen flex flex-col">
           {/* Back Button */}
           <motion.div
@@ -56,7 +56,7 @@ export default function PaymentTransactionPage() {
               variant="ghost"
               size="sm"
               onClick={() => router.back()}
-              className="gap-2 group"
+              className="gap-2 group relative z-10"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               Geri Dön
@@ -64,8 +64,14 @@ export default function PaymentTransactionPage() {
           </motion.div>
 
           {/* Main Content */}
-          <div className="flex-1 flex items-center justify-center">
-            <div className="w-full max-w-md mx-auto">
+          <div className="flex-1 flex items-center justify-center relative">
+            {/* Background Decorative Elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+            </div>
+
+            <div className="w-full max-w-md mx-auto relative">
               <AnimatePresence mode="wait">
                 {!isComplete ? (
                   <motion.div
@@ -73,52 +79,33 @@ export default function PaymentTransactionPage() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    className="space-y-8"
+                    className="space-y-8 backdrop-blur-sm bg-white/30 p-8 rounded-3xl shadow-xl border border-white/20"
                   >
                     {/* Processing Animation */}
-                    <div className="relative aspect-square w-48 mx-auto">
-                      {/* Rotating Circles */}
+                    <div className="relative w-48 h-48 mx-auto">
                       <motion.div
-                        className="absolute inset-0"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="w-full h-full"
                       >
-                        <div className="absolute inset-0 rounded-full border-4 border-primary/30 border-t-primary" />
+                        <img
+                          src="/img/animations/pay-animation.gif"
+                          alt="Payment Processing"
+                          className="w-full h-full object-contain filter drop-shadow-lg"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                       </motion.div>
-                      <motion.div
-                        className="absolute inset-4"
-                        animate={{ rotate: -360 }}
-                        transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                      >
-                        <div className="absolute inset-0 rounded-full border-4 border-primary/20 border-t-primary/60" />
-                      </motion.div>
-                      <motion.div
-                        className="absolute inset-8"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      >
-                        <div className="absolute inset-0 rounded-full border-4 border-primary/10 border-t-primary/40" />
-                      </motion.div>
-
-                      {/* Center Icon */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        >
-                          <CreditCard className="w-12 h-12 text-primary" />
-                        </motion.div>
-                      </div>
                     </div>
 
                     {/* Amount Display */}
-                    <div className="text-center space-y-2">
-                      <div className="text-2xl font-bold text-primary">₺ {total.toFixed(2)}</div>
-                      <div className="text-sm text-muted-foreground">İşleminiz Gerçekleştiriliyor</div>
+                    <div className="text-center space-y-2 bg-white/20 rounded-2xl p-4 backdrop-blur-sm">
+                      <div className="text-3xl font-bold text-primary">₺ {total.toFixed(2)}</div>
+                      <div className="text-sm text-muted-foreground font-medium">İşleminiz Gerçekleştiriliyor</div>
                     </div>
 
                     {/* Steps Progress */}
-                    <div className="space-y-4">
+                    <div className="space-y-6 relative">
+                      <div className="absolute left-4 top-4 bottom-4 w-[2px] bg-muted/50" />
                       {STEPS.map((step, index) => (
                         <motion.div
                           key={step.id}
@@ -130,12 +117,20 @@ export default function PaymentTransactionPage() {
                           }}
                           transition={{ delay: index * 0.2 }}
                         >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              currentStep >= index ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                          <div className="flex items-center gap-4 pl-10">
+                            <div className={`absolute left-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                              currentStep >= index 
+                                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' 
+                                : 'bg-muted'
                             }`}>
                               {currentStep > index ? (
-                                <CheckCircle2 className="w-5 h-5" />
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  transition={{ type: "spring", bounce: 0.5 }}
+                                >
+                                  <CheckCircle2 className="w-5 h-5" />
+                                </motion.div>
                               ) : (
                                 <span>{step.id}</span>
                               )}
@@ -144,12 +139,12 @@ export default function PaymentTransactionPage() {
                               <div className="font-medium">{step.title}</div>
                               {currentStep === index && (
                                 <motion.div
-                                  className="h-1 bg-primary/20 mt-2 rounded-full overflow-hidden"
+                                  className="h-1 bg-primary/10 mt-2 rounded-full overflow-hidden"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
                                 >
                                   <motion.div
-                                    className="h-full bg-primary"
+                                    className="h-full bg-gradient-to-r from-primary/60 to-primary"
                                     initial={{ width: "0%" }}
                                     animate={{ width: "100%" }}
                                     transition={{ 
@@ -170,44 +165,45 @@ export default function PaymentTransactionPage() {
                     key="complete"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="text-center space-y-6"
+                    className="text-center space-y-8 backdrop-blur-sm bg-white/30 p-8 rounded-3xl shadow-xl border border-white/20"
                   >
                     {/* Success Animation */}
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", bounce: 0.5 }}
-                      className="w-24 h-24 rounded-full bg-primary/10 mx-auto flex items-center justify-center"
+                      className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 mx-auto flex items-center justify-center backdrop-blur-sm"
                     >
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ delay: 0.2 }}
+                        transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
+                        className="bg-primary/10 p-4 rounded-full"
                       >
-                        <CheckCircle2 className="w-12 h-12 text-primary" />
+                        <CheckCircle2 className="w-16 h-16 text-primary" />
                       </motion.div>
                     </motion.div>
 
                     {/* Success Message */}
                     <div className="space-y-2">
-                      <h2 className="text-2xl font-bold text-primary">
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                         İşlem Başarılı
                       </h2>
-                      <p className="text-muted-foreground">
+                      <p className="text-muted-foreground text-lg">
                         Ödemeniz başarıyla tamamlandı
                       </p>
                     </div>
 
                     {/* Amount Confirmation */}
-                    <div className="bg-primary/5 rounded-xl p-4">
-                      <div className="text-sm text-muted-foreground">Ödenen Tutar</div>
-                      <div className="text-3xl font-bold text-primary">₺ {total.toFixed(2)}</div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 space-y-2">
+                      <div className="text-sm text-muted-foreground font-medium">Ödenen Tutar</div>
+                      <div className="text-4xl font-bold text-primary">₺ {total.toFixed(2)}</div>
                     </div>
 
                     {/* Return Button */}
                     <Button
-                      className="w-full h-12"
-                      onClick={() => router.push('/menu')}
+                      className="w-full h-12 text-lg font-medium shadow-lg shadow-primary/20 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300"
+                      onClick={() => router.push('/')}
                     >
                       Menüye Dön
                     </Button>
