@@ -139,25 +139,36 @@ export default function ProductContent({ params }: { params: { id: string } }) {
       <div className="mt-6 max-w-6xl mx-auto">
         <div className="space-y-8">
           <motion.div variants={itemVariants}>
-            <h1 className="text-4xl font-bold text-center mb-2">{product.name}</h1>
-            <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto">
-              {product.description}
-            </p>
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <div className="grid lg:grid-cols-2 gap-8 items-start">
-              <ProductImage image={product.image} name={product.name} />
-              <div className="space-y-6">
-                <ProductInfo product={product} />
-                
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {product.ingredients && (
-                    <ProductIngredients ingredients={product.ingredients} />
-                  )}
-                  {product.allergens && (
-                    <ProductAllergens allergens={product.allergens} />
-                  )}
+            <div className="bg-white/50 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+              <div className="grid lg:grid-cols-2 gap-8 items-start p-6">
+                <div className="relative">
+                  <ProductImage image={product.image} name={product.name} />
+                  <div className="absolute top-4 right-4 bg-primary/90 text-primary-foreground px-4 py-2 rounded-full font-bold shadow-lg">
+                    {product.price} ₺
+                  </div>
+                </div>
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <h1 className="text-4xl font-bold">{product.name}</h1>
+                    <p className="text-lg text-muted-foreground">
+                      {product.description}
+                    </p>
+                  </div>
+                  
+                  <ProductInfo product={product} />
+                  
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {product.ingredients && (
+                      <div className="bg-secondary/10 rounded-xl p-4">
+                        <ProductIngredients ingredients={product.ingredients} />
+                      </div>
+                    )}
+                    {product.allergens && (
+                      <div className="bg-secondary/10 rounded-xl p-4">
+                        <ProductAllergens allergens={product.allergens} />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
