@@ -3,7 +3,7 @@
 import { CartSheet } from '@/components/cart-sheet';
 import { useCartStore } from '@/store/cart';
 import { useLanguageStore } from '@/store/language';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Price } from '../ui/price';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -21,7 +21,7 @@ export function CartFooter() {
   if (!hasItems || isProductDetail) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-t shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 z-[50] bg-background/95 backdrop-blur-lg border-t shadow-lg">
       <CartSheet>
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="h-20 flex items-center justify-between gap-4">

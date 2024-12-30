@@ -34,7 +34,7 @@ export default function HomeContent() {
   return (
     <main className="relative min-h-screen bg-gradient-to-b from-background to-background/95">
       {/* Hero Section */}
-      <div className="relative h-[60vh] mb-8 overflow-hidden">
+      <div className="relative h-[60vh]">
         <HeroSlider />
       </div>
 

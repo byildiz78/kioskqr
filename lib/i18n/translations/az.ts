@@ -18,7 +18,13 @@ export const az = {
     searchPlaceholder: "Məhsul və ya kateqoriya axtar...",
     suggestedSearches: "Təklif olunan axtarışlar:",
     noResults: "Nəticə tapılmadı",
-    tryDifferentSearch: "Fərqli axtarış sözü sınayın"
+    tryDifferentSearch: "Fərqli axtarış sözü sınayın",
+    languageSelection: "Dil Seçimi",
+    selectLanguage: "Dil seçin",
+    activeLanguage: "Aktiv dil",
+    welcomeMessage: "Sifarişinizi Buradan Verə Bilərsiniz",
+    tapToViewMenu: "Menyunu görmək üçün toxunun",
+    digitalMenu: "RƏQƏMİ MENYU"
   },
   product: {
     spicy: "Acılı",

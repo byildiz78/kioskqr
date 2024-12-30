@@ -18,7 +18,13 @@ export const en = {
     searchPlaceholder: "Search for products or categories...",
     suggestedSearches: "Suggested searches:",
     noResults: "No results found",
-    tryDifferentSearch: "Try a different search term"
+    tryDifferentSearch: "Try a different search term",
+    languageSelection: "Language Selection",
+    selectLanguage: "Select Language",
+    activeLanguage: "Active Language",
+    welcomeMessage: "Place Your Order Here",
+    tapToViewMenu: "Tap to view the menu",
+    digitalMenu: "DIGITAL MENU"
   },
   product: {
     spicy: "Spicy",

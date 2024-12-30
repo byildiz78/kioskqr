@@ -20,7 +20,7 @@ export function HeroSlider() {
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       <AnimatePresence initial={false}>
         <motion.div
           key={currentIndex}
@@ -34,8 +34,10 @@ export function HeroSlider() {
             <img 
               src={images[currentIndex]}
               alt="Hero slider"
-              className="max-w-full max-h-full object-contain transition-transform duration-500"
+              className="w-full h-full object-cover transition-transform duration-500"
             />
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
           </div>
         </motion.div>
       </AnimatePresence>
@@ -46,7 +48,7 @@ export function HeroSlider() {
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
               index === currentIndex 
                 ? 'bg-primary w-8' 
                 : 'bg-gray-300 hover:bg-gray-400'

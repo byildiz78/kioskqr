@@ -40,7 +40,7 @@ export function CartSheet({ children, className }: CartSheetProps) {
           )}
         </div>
       </SheetTrigger>
-      <SheetContent className="flex flex-col h-full w-full sm:max-w-lg">
+      <SheetContent className="flex flex-col h-full w-full sm:max-w-lg z-[60]">
         <SheetHeader className="space-y-3 pb-6 border-b relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent" />
           <div className="relative">

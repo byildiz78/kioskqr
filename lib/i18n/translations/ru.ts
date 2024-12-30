@@ -18,7 +18,13 @@ export const ru = {
     searchPlaceholder: "Поиск продуктов или категорий...",
     suggestedSearches: "Рекомендуемые запросы:",
     noResults: "Результатов не найдено",
-    tryDifferentSearch: "Попробуйте другой поисковый запрос"
+    tryDifferentSearch: "Попробуйте другой поисковый запрос",
+    languageSelection: "Выбор языка",
+    selectLanguage: "Выберите язык",
+    activeLanguage: "Активный язык",
+    welcomeMessage: "Сделайте заказ здесь",
+    tapToViewMenu: "Нажмите, чтобы посмотреть меню",
+    digitalMenu: "ЦИФРОВОЕ МЕНЮ"
   },
   product: {
     spicy: "Острый",

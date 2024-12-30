@@ -10,7 +10,7 @@ import { languages, type Language } from '@/lib/i18n';
 export default function WelcomePage() {
   const [isExiting, setIsExiting] = useState(false);
   const router = useRouter();
-  const { currentLanguage, setLanguage } = useLanguageStore();
+  const { currentLanguage, setLanguage, t } = useLanguageStore();
 
   const handleClick = () => {
     setIsExiting(true);
@@ -52,7 +52,7 @@ export default function WelcomePage() {
             <div className="flex flex-col items-center pt-8 pb-4">
               <div className="flex items-center gap-2 text-white/90 mb-4">
                 <Globe className="w-5 h-5" />
-                <span className="text-lg font-medium">Dil Seçimi</span>
+                <span className="text-lg font-medium">{t.common.languageSelection}</span>
               </div>
             </div>
 
@@ -126,7 +126,7 @@ export default function WelcomePage() {
                 Lezzet Restoran
               </h1>
               <div className="text-lg text-white/60 tracking-widest">
-                DİJİTAL MENÜ
+                {t.common.digitalMenu}
               </div>
             </motion.div>
 
@@ -141,7 +141,7 @@ export default function WelcomePage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/50 to-orange-500/50 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
                 <div className="relative inline-flex items-center gap-4 px-8 py-6 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all">
                   <span className="text-3xl md:text-4xl font-medium text-white">
-                    Siparişinizi Buradan Verebilirsiniz
+                    {t.common.welcomeMessage}
                   </span>
                   <ChevronRight className="w-8 h-8 text-white animate-pulse" />
                 </div>
@@ -166,7 +166,7 @@ export default function WelcomePage() {
                 }}
                 className="text-white/60 text-lg font-medium tracking-wide"
               >
-                Menüyü görüntülemek için dokunun
+                {t.common.tapToViewMenu}
               </motion.div>
             </motion.div>
           </div>

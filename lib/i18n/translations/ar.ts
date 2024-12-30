@@ -18,7 +18,13 @@ export const ar = {
     searchPlaceholder: "البحث عن المنتجات أو الفئات...",
     suggestedSearches: "عمليات البحث المقترحة:",
     noResults: "لم يتم العثور على نتائج",
-    tryDifferentSearch: "جرب مصطلح بحث مختلف"
+    tryDifferentSearch: "جرب مصطلح بحث مختلف",
+    languageSelection: "اختيار اللغة",
+    selectLanguage: "اختر اللغة",
+    activeLanguage: "اللغة النشطة",
+    welcomeMessage: "يمكنك تقديم طلبك من هنا",
+    tapToViewMenu: "انقر لعرض القائمة",
+    digitalMenu: "القائمة الرقمية"
   },
   product: {
     spicy: "حار",

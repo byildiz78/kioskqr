@@ -28,7 +28,7 @@ export function LanguageSwitcher() {
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="relative group"
+          className="relative group pb-20" // Added bottom padding
         >
           <div className="relative px-6 py-3 rounded-xl flex items-center gap-3 bg-background border border-primary/20 hover:border-primary/40 transition-all duration-300">
             {/* Content */}
@@ -58,7 +58,10 @@ export function LanguageSwitcher() {
         </motion.button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-72 p-3 mt-2">
+      <DropdownMenuContent 
+        align="end" 
+        className="w-72 p-3 mt-2"
+      >
         <div className="space-y-1">
           {Object.entries(languages).map(([key, { name, flag }]) => (
             <DropdownMenuItem

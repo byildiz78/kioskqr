@@ -11,7 +11,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 export function SidebarNav() {
   const { categories, isLoading } = useMenuStore();
   const pathname = usePathname();
-  // Update isHome to be false when viewing a category
   const isHome = !pathname.includes('/category/');
 
   if (isLoading) {

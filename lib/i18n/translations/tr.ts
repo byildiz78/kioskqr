@@ -18,7 +18,13 @@ export const tr = {
     searchPlaceholder: "Ürün veya kategori ara...",
     suggestedSearches: "Önerilen aramalar:",
     noResults: "Sonuç bulunamadı",
-    tryDifferentSearch: "Farklı bir arama terimi deneyin"
+    tryDifferentSearch: "Farklı bir arama terimi deneyin",
+    languageSelection: "Dil Seçimi",
+    selectLanguage: "Dili Seç",
+    activeLanguage: "Aktif Dil",
+    welcomeMessage: "Siparişinizi Buradan Verebilirsiniz",
+    tapToViewMenu: "Menüyü görüntülemek için dokunun",
+    digitalMenu: "DİJİTAL MENÜ"
   },
   product: {
     spicy: "Acılı",

@@ -1,18 +1,15 @@
 "use client";
 
 import { useState, useCallback } from 'react';
-import { ComboGroup as ComboGroupType, ComboItem } from '../../types/api';
-import { ComboSelections } from '../../types/combo';
+import { ComboGroup as ComboGroupType, ComboItem } from '@/types/api';
+import { ComboSelections } from '@/types/combo';
 import { ComboGroup } from './combo-group';
 import { Button } from '../ui/button';
-import { useToast } from '../../hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useLanguageStore } from '../../store/language';
-import { 
-  calculateTotalPrice,
-  calculateGroupProgress 
-} from '../../lib/utils/combo-selector';
+import { useLanguageStore } from '@/store/language';
+import { calculateTotalPrice, calculateGroupProgress } from '@/lib/utils/combo-selector';
 
 interface ComboSelectorProps {
   groups: ComboGroupType[];
@@ -34,10 +31,8 @@ export function ComboSelector({ groups, basePrice, onAddToCart }: ComboSelectorP
       const otherSelections = currentSelections.filter(s => s.item.MenuItemKey !== item.MenuItemKey);
       const newQuantity = quantity;
 
-      // Calculate total quantity including the new selection
       const totalQuantity = otherSelections.reduce((sum, s) => sum + s.quantity, 0) + newQuantity;
 
-      // Check if adding this selection would exceed the maximum
       if (group.MaxQuantity > 0 && totalQuantity > group.MaxQuantity) {
         toast({
           title: t.common.error,
@@ -60,7 +55,6 @@ export function ComboSelector({ groups, basePrice, onAddToCart }: ComboSelectorP
   }, [groups, toast, t]);
 
   const handleAddToCart = useCallback(() => {
-    // Check for required selections
     const requiredGroups = groups.filter(group => group.IsForcedGroup);
     const missingSelections = requiredGroups.filter(group => {
       const groupSelections = selections[group.GroupName] || [];
@@ -68,7 +62,6 @@ export function ComboSelector({ groups, basePrice, onAddToCart }: ComboSelectorP
     });
 
     if (missingSelections.length > 0) {
-      // Show toast for the first missing required selection
       toast({
         title: t.common.error,
         description: t.product.requiredSelectionError.replace('{group}', missingSelections[0].GroupName),
@@ -82,23 +75,18 @@ export function ComboSelector({ groups, basePrice, onAddToCart }: ComboSelectorP
 
   return (
     <motion.div 
-      className="space-y-8"
+      className="space-y-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <div className="space-y-12">
+      <div className="space-y-6">
         {groups.map((group, index) => (
           <motion.div
             key={group.GroupName}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="relative"
           >
-            {index !== groups.length - 1 && (
-              <div className="absolute -bottom-6 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-            )}
-            
             <ComboGroup
               group={group}
               selections={selections}
