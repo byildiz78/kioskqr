@@ -1,12 +1,12 @@
 "use client";
 
-import { CartSheet } from '@/components/cart-sheet';
-import { useCartStore } from '@/store/cart';
-import { useLanguageStore } from '@/store/language';
+import { CartSheet } from './cart-sheet';
+import { useCartStore } from '../store/cart';
+import { useLanguageStore } from '../store/language';
 import { motion } from 'framer-motion';
-import { Price } from '../ui/price';
+import { Price } from './ui/price';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 
 export function CartFooter() {
