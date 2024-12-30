@@ -1,13 +1,13 @@
 "use client";
 
-import { CartSheet } from "./cart-sheet";
-import { useCartStore } from "../store/cart";
-import { useLanguageStore } from "../store/language";
-import { motion } from "framer-motion";
-import { Price } from "./ui/price";
-import { ShoppingBag, ArrowRight } from "lucide-react";
-import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
+import { CartSheet } from '@/components/cart-sheet';
+import { useCartStore } from '@/store/cart';
+import { useLanguageStore } from '@/store/language';
+import { motion } from 'framer-motion';
+import { Price } from '../ui/price';
+import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
 
 export function CartFooter() {
   const { items, total } = useCartStore();
@@ -46,7 +46,7 @@ export function CartFooter() {
               <Button 
                 size="lg" 
                 className="h-12 px-6 gap-2 text-base"
-                onClick={() => router.push("/payment")}
+                onClick={() => router.push('/payment')}
               >
                 {t.common.placeOrder}
                 <ArrowRight className="h-4 w-4" />

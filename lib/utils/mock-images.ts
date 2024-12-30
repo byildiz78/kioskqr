@@ -11,10 +11,19 @@ const mockProductImages = [
 ];
 
 const mockCategoryImages = [
+  // Ana Yemekler
   'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+  // Başlangıçlar
   'https://images.unsplash.com/photo-1541014741259-de529411b96a',
+  // İçecekler
   'https://images.unsplash.com/photo-1551024709-8f23befc6f87',
+  // Tatlılar
   'https://images.unsplash.com/photo-1551024506-0341cb19b9f3',
+  // Yeni kategoriler için ek görseller
+  'https://images.unsplash.com/photo-1498837167922-ddd27525d352',
+  'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327',
+  'https://images.unsplash.com/photo-1473093295043-cdd812d0e601',
+  'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd'
 ];
 
 let currentProductIndex = 0;

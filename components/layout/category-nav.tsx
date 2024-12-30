@@ -8,22 +8,22 @@ import { CategoryIcon } from './category-icon';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useMenuStore } from '@/store/menu';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Menu } from 'lucide-react';
 
 export function CategoryNav() {
   const pathname = usePathname();
   const { categories, isLoading } = useMenuStore();
-  const isHome = pathname === '/';
+  // Update isHome to be false when viewing a category
+  const isHome = !pathname.includes('/category/');
 
   if (isLoading) {
     return (
       <motion.nav 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed top-16 left-0 right-0 bg-background/95 backdrop-blur-lg border-b z-40"
+        className="fixed top-16 left-0 right-0 bg-background/95 backdrop-blur-lg border-b z-40 shadow-lg"
       >
         <ScrollArea className="w-full">
-          <div className="container mx-auto h-14 px-4 mt-2">
+          <div className="container mx-auto h-16 px-4">
             <div className="flex items-center gap-3 h-full">
               {[1, 2, 3, 4].map((i) => (
                 <Skeleton key={i} className="h-10 w-32" />
@@ -40,36 +40,41 @@ export function CategoryNav() {
     <motion.nav 
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed top-16 left-0 right-0 bg-gradient-to-b from-background/98 to-background/95 backdrop-blur-lg border-b z-40 shadow-sm"
+      className="fixed top-16 left-0 right-0 bg-gradient-to-b from-background/98 to-background/95 backdrop-blur-lg border-b z-40 shadow-lg"
     >
       <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
       
       <ScrollArea className="w-full">
-        <div className="container mx-auto h-14 px-4 mt-2">
+        <div className="container mx-auto h-16 px-4">
           <div className="flex items-center gap-3 h-full">
             {/* Home Menu Link */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
+              className="shrink-0"
             >
               <Link
-                href="/"
+                href="/menu"
                 className={cn(
-                  "group flex items-center gap-2 px-4 py-2 rounded-xl transition-all",
-                  "hover:bg-secondary/80 hover:shadow-md",
+                  "group relative flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300",
+                  "hover:shadow-md hover:shadow-primary/5",
                   "border border-transparent",
-                  isHome && "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+                  isHome && "bg-gradient-to-br from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
                 )}
               >
+                {/* Icon Container */}
                 <div className={cn(
-                  "p-2 rounded-full transition-colors",
-                  isHome ? "bg-primary-foreground/10" : "bg-secondary",
-                  "group-hover:scale-110 transition-transform duration-300"
+                  "relative p-2 rounded-lg transition-all duration-300",
+                  isHome ? "bg-primary-foreground/10" : "bg-primary/10",
+                  "group-hover:bg-primary/20",
+                  "group-hover:scale-110 group-hover:rotate-3"
                 )}>
-                  <Menu className="h-4 w-4" />
+                  <CategoryIcon categoryId="menu" className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-medium whitespace-nowrap">
-                  Menü
+
+                {/* Text */}
+                <span className="relative text-sm font-medium whitespace-nowrap">
+                  Tüm Menü
                 </span>
               </Link>
             </motion.div>
@@ -84,24 +89,29 @@ export function CategoryNav() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: (index + 1) * 0.1 }}
+                  className="shrink-0"
                 >
                   <Link
                     href={`/category/${category.id}`}
                     className={cn(
-                      "group flex items-center gap-2 px-4 py-2 rounded-xl transition-all",
-                      "hover:bg-secondary/80 hover:shadow-md",
+                      "group relative flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300",
+                      "hover:shadow-md hover:shadow-primary/5",
                       "border border-transparent",
-                      isActive && "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+                      isActive && "bg-gradient-to-br from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
                     )}
                   >
+                    {/* Icon Container */}
                     <div className={cn(
-                      "p-2 rounded-full transition-all duration-300",
-                      isActive ? "bg-primary-foreground/10" : "bg-secondary",
+                      "relative p-2 rounded-lg transition-all duration-300",
+                      isActive ? "bg-primary-foreground/10" : "bg-primary/10",
+                      "group-hover:bg-primary/20",
                       "group-hover:scale-110 group-hover:rotate-3"
                     )}>
                       <CategoryIcon categoryId={category.id} className="h-4 w-4" />
                     </div>
-                    <span className="text-sm font-medium whitespace-nowrap">
+
+                    {/* Text */}
+                    <span className="relative text-sm font-medium whitespace-nowrap">
                       {category.name}
                     </span>
                   </Link>
