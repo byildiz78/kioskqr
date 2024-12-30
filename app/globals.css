@@ -49,4 +49,51 @@
   }
 }
 
+/* Custom background colors */
+.bg-menu {
+  background-color: hsl(220 10% 92%); /* Light theme - slightly darker */
+  background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.08) 100%),
+    radial-gradient(at 50% 0%, rgba(var(--primary), 0.05), transparent 70%);
+}
+
+.dark .bg-menu {
+  background-color: hsl(220 10% 7%); /* Dark theme - even darker */
+  background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.4) 100%),
+    radial-gradient(at 50% 0%, rgba(var(--primary), 0.08), transparent 70%);
+}
+
+/* Card hover effect enhancement */
+.glass-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  transform: skewX(-15deg);
+  transition: 0.5s;
+}
+
+.glass-effect:hover::before {
+  left: 100%;
+}
+
 /* Existing styles... */

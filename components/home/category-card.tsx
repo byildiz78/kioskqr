@@ -19,7 +19,7 @@ export function CategoryCard({ category, index }: CategoryCardProps) {
     >
       <Link href={`/menu/category/${category.id}`}>
         <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
-          <div className="relative h-48">
+          <div className="relative h-40">
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
             <img
               src={category.image}

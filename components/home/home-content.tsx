@@ -34,7 +34,7 @@ export default function HomeContent() {
   return (
     <main className="relative min-h-screen bg-gradient-to-b from-background to-background/95">
       {/* Hero Section */}
-      <div className="relative h-[60vh] mb-24 overflow-hidden">
+      <div className="relative h-[60vh] mb-8 overflow-hidden">
         <HeroSlider />
       </div>
 
@@ -43,13 +43,13 @@ export default function HomeContent() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
-          <h2 className="text-3xl font-bold mb-4">Kategoriler</h2>
+          <h2 className="text-3xl font-bold mb-3">Kategoriler</h2>
           <div className="h-1 w-20 bg-primary rounded-full mx-auto" />
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {categories.map((category, index) => (
             <CategoryCard key={category.id} category={category} index={index} />
           ))}

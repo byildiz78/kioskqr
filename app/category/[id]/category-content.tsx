@@ -15,7 +15,7 @@ export default function CategoryContent({ params }: { params: { id: string } }) 
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 pt-40 text-center">
+      <div className="container mx-auto px-4 text-center">
         <h1 className="text-2xl font-bold text-red-500">{error}</h1>
         <p className="text-muted-foreground mt-2">Lütfen daha sonra tekrar deneyin.</p>
       </div>
@@ -24,9 +24,9 @@ export default function CategoryContent({ params }: { params: { id: string } }) 
 
   if (isLoading) {
     return (
-      <main className="container mx-auto px-4 pt-40">
+      <main className="container mx-auto px-4">
         <Skeleton className="h-12 w-48 mb-8" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <Skeleton key={i} className="h-[400px]" />
           ))}
@@ -36,26 +36,34 @@ export default function CategoryContent({ params }: { params: { id: string } }) 
   }
 
   return (
-    <main className="container mx-auto px-4 pt-40">
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <h1 className="text-3xl font-bold mb-2">{category?.name}</h1>
-        <div className="h-1 w-20 bg-primary rounded-full"></div>
-      </motion.div>
+    <div className="relative min-h-screen pt-20">
+      <main className="container relative mx-auto px-4">
+        {/* Category Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="text-center">
+            <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-primary/90 to-primary/70 bg-clip-text text-transparent">
+              {category?.name}
+            </h1>
+            <div className="h-1 w-20 bg-primary/20 rounded-full mx-auto" />
+          </div>
+        </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-24">
-        {categoryProducts.map((product, index) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            index={index}
-            onAddToCart={addToCart}
-          />
-        ))}
-      </div>
-    </main>
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categoryProducts.map((product, index) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              index={index}
+              onAddToCart={addToCart}
+            />
+          ))}
+        </div>
+      </main>
+    </div>
   );
 }

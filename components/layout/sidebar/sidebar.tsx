@@ -4,8 +4,19 @@ import { motion } from 'framer-motion';
 import { SidebarNav } from './sidebar-nav';
 import { SidebarLogo } from './sidebar-logo';
 import { SidebarFooter } from './sidebar-footer';
+import { usePathname } from 'next/navigation';
 
 export function Sidebar() {
+  const pathname = usePathname();
+  
+  // Check if current page is a product detail page
+  const isProductDetailPage = pathname?.startsWith('/menu/product/');
+
+  // Don't render sidebar on product detail pages
+  if (isProductDetailPage) {
+    return null;
+  }
+
   return (
     <motion.aside
       initial={{ x: -300, opacity: 0 }}

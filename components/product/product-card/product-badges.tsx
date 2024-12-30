@@ -8,33 +8,24 @@ interface ProductBadgesProps {
   product: Product;
 }
 
-interface Badge {
-  icon: BadgeIcon;
-  value: string;
-  className: string;
-}
-
 export function ProductBadges({ product }: ProductBadgesProps) {
-  const badges: Badge[] = [
-    product.prepTime && {
-      icon: "time",
-      value: `${product.prepTime} dk`,
-      className: "bg-secondary/60 backdrop-blur-md border border-secondary hover:bg-secondary/80 transition-colors"
-    },
-    product.isSpicy && {
-      icon: "spicy",
+  const badges = [
+    product.isSpicy ? {
+      icon: "spicy" as BadgeIcon,
       value: "Acılı",
       className: "bg-red-500/10 text-red-600 backdrop-blur-md border border-red-200/30 hover:bg-red-500/20 transition-colors"
-    },
-    product.isVegetarian && {
-      icon: "vegetarian",
+    } : null,
+    product.isVegetarian ? {
+      icon: "vegetarian" as BadgeIcon,
       value: "Vejetaryen",
       className: "bg-green-500/10 text-green-600 backdrop-blur-md border border-green-200/30 hover:bg-green-500/20 transition-colors"
-    }
-  ].filter((badge): badge is Badge => Boolean(badge));
+    } : null
+  ].filter((badge): badge is { icon: BadgeIcon; value: string; className: string } => badge !== null);
+
+  if (badges.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2 mb-6">
+    <div className="flex flex-wrap gap-2">
       {badges.map((badge, index) => (
         <motion.div
           key={badge.value}

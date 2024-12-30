@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguageStore } from '@/store/language';
 
@@ -18,13 +18,27 @@ export function AddToCartButton({ onClick, isCombo }: AddToCartButtonProps) {
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.3 }}
+      className="w-full"
     >
       <Button
         onClick={onClick}
-        className="w-full rounded-full hover:scale-105 active:scale-95 transition-all duration-200 gap-2 bg-primary/90 backdrop-blur-sm hover:bg-primary"
+        className={`w-full h-10 hover:scale-105 active:scale-95 transition-all duration-200 gap-2 ${
+          isCombo 
+            ? 'bg-primary/90 hover:bg-primary' 
+            : 'bg-primary/90 hover:bg-primary'
+        }`}
       >
-        <Plus className="h-4 w-4" />
-        {isCombo ? t.common.viewMenu : t.common.addToCart}
+        {isCombo ? (
+          <>
+            {t.common.viewMenu}
+            <ChevronRight className="h-4 w-4" />
+          </>
+        ) : (
+          <>
+            <Plus className="h-4 w-4" />
+            {t.common.addToCart}
+          </>
+        )}
       </Button>
     </motion.div>
   );
