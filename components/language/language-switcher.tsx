@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion } from 'framer-motion';
-import { Globe } from 'lucide-react';
+import { Globe, ChevronDown } from 'lucide-react';
 
 export function LanguageSwitcher() {
   const { currentLanguage, setLanguage } = useLanguageStore();
@@ -25,41 +25,74 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <button className="relative group">
-          <div className="relative px-3 py-2 rounded-xl flex items-center gap-2.5 hover:bg-white/10 transition-colors">
-            {/* Flag */}
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
-              <span className="text-2xl leading-none">{languages[currentLanguage].flag}</span>
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="relative group"
+        >
+          <div className="relative px-6 py-3 rounded-xl flex items-center gap-3 bg-background border border-primary/20 hover:border-primary/40 transition-all duration-300">
+            {/* Content */}
+            <div className="relative flex items-center gap-4">
+              {/* Flag Container */}
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <span className="text-3xl">{languages[currentLanguage].flag}</span>
+              </div>
+              
+              {/* Text Content */}
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-medium text-primary uppercase tracking-wider">
+                    Dil Seçimi
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-primary">
+                    {languages[currentLanguage].name}
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-primary group-hover:text-primary transition-colors" />
+                </div>
+              </div>
             </div>
-            
-            {/* Language Name */}
-            <span className="hidden sm:block text-sm font-bold text-white tracking-wide">
-              {languages[currentLanguage].name}
-            </span>
-            
-            {/* Icon */}
-            <Globe className="h-4 w-4 text-white opacity-70 group-hover:opacity-100 group-hover:rotate-12 transition-all" />
           </div>
-        </button>
+        </motion.button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56 p-2">
-        <div className="grid gap-1">
+      <DropdownMenuContent align="end" className="w-72 p-3 mt-2">
+        <div className="space-y-1">
           {Object.entries(languages).map(([key, { name, flag }]) => (
             <DropdownMenuItem
               key={key}
-              className="flex items-center gap-3 p-3 cursor-pointer rounded-lg data-[highlighted]:bg-primary/10"
+              className={`
+                flex items-center gap-4 p-4 cursor-pointer rounded-xl
+                transition-all duration-200
+                ${currentLanguage === key 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-primary/10'
+                }
+              `}
               onSelect={() => handleSelect(key as Language)}
             >
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-muted">
-                <span className="text-2xl">{flag}</span>
+              <div className={`
+                flex items-center justify-center w-12 h-12 rounded-lg
+                ${currentLanguage === key 
+                  ? 'bg-primary-foreground/10' 
+                  : 'bg-primary/5'
+                }
+              `}>
+                <span className="text-3xl">{flag}</span>
               </div>
-              <span className="flex-1 font-semibold">{name}</span>
+              <div className="flex-1">
+                <div className="font-bold text-lg">{name}</div>
+                <div className="text-sm opacity-80">
+                  {currentLanguage === key ? 'Aktif Dil' : 'Dili Seç'}
+                </div>
+              </div>
               {currentLanguage === key && (
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="w-2 h-2 rounded-full bg-primary"
+                  layoutId="activeLanguage"
+                  className="w-3 h-3 rounded-full bg-primary-foreground"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
             </DropdownMenuItem>

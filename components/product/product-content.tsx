@@ -8,22 +8,60 @@ import { ProductIngredients } from '@/components/product/product-ingredients';
 import { ProductAllergens } from '@/components/product/product-allergens';
 import { ComboSelector } from '@/components/combo/combo-selector';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
 import { notFound } from 'next/navigation';
 import { useCartStore } from '@/store/cart';
 import { useRouter } from 'next/navigation';
 import { ComboSelections } from '@/types/combo';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Check, UtensilsCrossed } from 'lucide-react';
 import { useLanguageStore } from '@/store/language';
 import { containerVariants, itemVariants } from './animations';
+import { useState } from 'react';
+import type { Product } from '@/types';
 
 export default function ProductContent({ params }: { params: { id: string } }) {
   const { products, isLoading, error } = useMenuStore();
   const addToCart = useCartStore((state) => state.addItem);
   const { t } = useLanguageStore();
   const router = useRouter();
+  const [showAddedAnimation, setShowAddedAnimation] = useState(false);
+  
   const product = products.find((p) => p.id === params.id);
+
+  if (!product) {
+    notFound();
+  }
+
+  const handleComboAddToCart = (selections: ComboSelections) => {
+    // Create a new product object with combo selections
+    const comboProduct: Product = {
+      ...product,
+      comboSelections: selections
+    };
+    
+    // Show animation
+    setShowAddedAnimation(true);
+
+    // Add to cart after a short delay
+    setTimeout(() => {
+      addToCart(comboProduct);
+      
+      // Navigate after animation
+      setTimeout(() => {
+        router.push(`/menu/category/${product.category}`);
+      }, 500);
+    }, 200);
+  };
+
+  const handleAddToCart = () => {
+    setShowAddedAnimation(true);
+    
+    setTimeout(() => {
+      addToCart(product);
+      router.push(`/menu/category/${product.category}`);
+    }, 700);
+  };
 
   if (error) {
     return (
@@ -50,23 +88,6 @@ export default function ProductContent({ params }: { params: { id: string } }) {
     );
   }
 
-  if (!product) {
-    notFound();
-  }
-
-  const handleComboAddToCart = (selections: ComboSelections) => {
-    addToCart({
-      ...product,
-      comboSelections: selections
-    });
-    router.push(`/menu/category/${product.category}`);
-  };
-
-  const handleAddToCart = () => {
-    addToCart(product);
-    router.push(`/menu/category/${product.category}`);
-  };
-
   return (
     <motion.main
       className="container mx-auto px-4 pt-40 pb-24"
@@ -74,15 +95,49 @@ export default function ProductContent({ params }: { params: { id: string } }) {
       initial="hidden"
       animate="visible"
     >
-      {/* Back Button */}
+      {/* Added to Cart Animation */}
+      <AnimatePresence>
+        {showAddedAnimation && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              className="bg-primary/95 text-primary-foreground p-8 rounded-2xl flex flex-col items-center gap-4 max-w-sm mx-4"
+            >
+              <div className="rounded-full bg-white/20 p-4">
+                {product.isCombo ? (
+                  <UtensilsCrossed className="w-12 h-12" />
+                ) : (
+                  <Check className="w-12 h-12" />
+                )}
+              </div>
+              <h3 className="text-2xl font-bold text-center">{product.name}</h3>
+              <p className="text-lg text-center text-primary-foreground/90">
+                {product.isCombo 
+                  ? "Menü başarıyla sepete eklendi!"
+                  : "Ürün sepete eklendi!"}
+              </p>
+              <div className="flex items-center gap-2 text-sm text-primary-foreground/80">
+                <ShoppingCart className="w-4 h-4" />
+                <span>Sepetinize eklendi</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div variants={itemVariants}>
         <ProductHeader categoryId={product.category} />
       </motion.div>
       
-      {/* Product Details */}
       <div className="mt-6 max-w-6xl mx-auto">
         <div className="space-y-8">
-          {/* Product Title */}
           <motion.div variants={itemVariants}>
             <h1 className="text-4xl font-bold text-center mb-2">{product.name}</h1>
             <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto">
@@ -90,7 +145,6 @@ export default function ProductContent({ params }: { params: { id: string } }) {
             </p>
           </motion.div>
 
-          {/* Product Image and Info */}
           <motion.div variants={itemVariants}>
             <div className="grid lg:grid-cols-2 gap-8 items-start">
               <ProductImage image={product.image} name={product.name} />
@@ -109,7 +163,6 @@ export default function ProductContent({ params }: { params: { id: string } }) {
             </div>
           </motion.div>
           
-          {/* Combo Selections or Add to Cart */}
           {product.isCombo && product.Combo ? (
             <motion.div variants={itemVariants}>
               <div className="mt-12 bg-secondary/20 rounded-2xl p-6 sm:p-8">

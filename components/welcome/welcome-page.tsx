@@ -3,20 +3,25 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag } from 'lucide-react';
-import { useLanguageStore } from '../../store/language';
-import { HeroSlider } from '../home/hero-slider';
+import { ShoppingBag, ChevronRight, Globe } from 'lucide-react';
+import { useLanguageStore } from '@/store/language';
+import { languages, type Language } from '@/lib/i18n';
 
 export default function WelcomePage() {
   const [isExiting, setIsExiting] = useState(false);
   const router = useRouter();
-  const { t } = useLanguageStore();
+  const { currentLanguage, setLanguage } = useLanguageStore();
 
   const handleClick = () => {
     setIsExiting(true);
     setTimeout(() => {
       router.push('/menu');
     }, 500);
+  };
+
+  const handleLanguageSelect = (language: Language) => {
+    setLanguage(language);
+    document.documentElement.dir = languages[language].dir;
   };
 
   return (
@@ -26,64 +31,143 @@ export default function WelcomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={handleClick}
-          className="fixed inset-0 flex flex-col items-center justify-center cursor-pointer"
+          className="fixed inset-0 overflow-hidden"
         >
-          {/* Hero Slider Background */}
-          <HeroSlider />
+          {/* Background */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2074')] bg-cover bg-center" />
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/30 via-transparent to-orange-500/30" />
+            <div className="absolute inset-0 bg-gradient-to-tl from-blue-500/20 via-transparent to-pink-500/20" />
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          </div>
 
-          {/* Content */}
-          <div className="relative text-center space-y-8 p-8 z-10">
-            {/* Animated Icon */}
+          {/* Language Switcher Section */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="absolute top-0 left-0 right-0 z-50"
+          >
+            {/* Language Title */}
+            <div className="flex flex-col items-center pt-8 pb-4">
+              <div className="flex items-center gap-2 text-white/90 mb-4">
+                <Globe className="w-5 h-5" />
+                <span className="text-lg font-medium">Dil Seçimi</span>
+              </div>
+            </div>
+
+            {/* Language Options */}
+            <div className="flex justify-center">
+              <div className="flex gap-3 p-3 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 shadow-2xl">
+                {Object.entries(languages).map(([key, { name, flag }]) => (
+                  <motion.button
+                    key={key}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleLanguageSelect(key as Language)}
+                    className={`relative group min-w-[140px] ${
+                      currentLanguage === key 
+                        ? '' 
+                        : 'hover:bg-white/10'
+                    }`}
+                  >
+                    {/* Background for active state */}
+                    {currentLanguage === key && (
+                      <motion.div
+                        layoutId="activeLanguage"
+                        className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/80 to-primary/60"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+
+                    {/* Content */}
+                    <div className={`relative flex flex-col items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${
+                      currentLanguage === key 
+                        ? 'text-white' 
+                        : 'text-white/70 hover:text-white'
+                    }`}>
+                      <span className="text-3xl">{flag}</span>
+                      <span className="font-medium">{name}</span>
+
+                      {/* Active Indicator */}
+                      {currentLanguage === key && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="absolute -bottom-1 w-12 h-1 rounded-full bg-white"
+                        />
+                      )}
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Main Content */}
+          <div 
+            className="relative h-full flex flex-col items-center justify-center p-8"
+            onClick={handleClick}
+          >
+            {/* Logo and Brand */}
             <motion.div
-              animate={{
-                scale: [1, 1.1, 1],
-                y: [0, -10, 0],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-              className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-primary/10 mb-8"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-center mb-20"
             >
-              <ShoppingBag className="w-16 h-16 text-primary" />
+              <div className="relative inline-flex items-center justify-center mb-6">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/50 to-orange-500/50 blur-2xl animate-pulse" />
+                <div className="relative w-40 h-40 rounded-full bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                  <ShoppingBag className="w-20 h-20 text-white" />
+                </div>
+              </div>
+              <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-white via-white/90 to-white/80 bg-clip-text text-transparent">
+                Lezzet Restoran
+              </h1>
+              <div className="text-lg text-white/60 tracking-widest">
+                DİJİTAL MENÜ
+              </div>
             </motion.div>
 
-            {/* Welcome Text */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-4xl md:text-6xl font-bold text-white"
+            {/* Call to Action */}
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="text-center"
             >
-              Hoş Geldiniz
-            </motion.h1>
-
-            {/* Instructions */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-xl md:text-2xl text-white/80"
-            >
-              Siparişinizi vermek için ekrana dokunun
-            </motion.p>
+              <div className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/50 to-orange-500/50 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
+                <div className="relative inline-flex items-center gap-4 px-8 py-6 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all">
+                  <span className="text-3xl md:text-4xl font-medium text-white">
+                    Siparişinizi Buradan Verebilirsiniz
+                  </span>
+                  <ChevronRight className="w-8 h-8 text-white animate-pulse" />
+                </div>
+              </div>
+            </motion.div>
 
             {/* Touch Indicator */}
             <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-              className="mt-12 text-white/60"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="absolute bottom-12 left-0 right-0 flex justify-center"
             >
-              👆
+              <motion.div
+                animate={{
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                }}
+                className="text-white/60 text-lg font-medium tracking-wide"
+              >
+                Menüyü görüntülemek için dokunun
+              </motion.div>
             </motion.div>
           </div>
         </motion.div>
