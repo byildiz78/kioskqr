@@ -6,6 +6,7 @@ import { ArrowLeft, CreditCard, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
+import { printService } from '@/lib/utils/print-service';
 
 const STEPS = [
   { id: 1, title: "Bağlantı Kuruluyor", duration: 2000 },
@@ -14,16 +15,21 @@ const STEPS = [
 ];
 
 export default function PaymentTransactionPage() {
-  const { total, clearCart } = useCartStore();
+  const { total, items, clearCart } = useCartStore();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [finalAmount, setFinalAmount] = useState(total);
+  const [orderNumber, setOrderNumber] = useState('');
+  const [isPrinting, setIsPrinting] = useState(false);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     
     const runSteps = async () => {
+      // Generate random order number
+      setOrderNumber(Math.floor(100000 + Math.random() * 900000).toString());
+
       for (let i = 0; i < STEPS.length; i++) {
         await new Promise(resolve => {
           timeout = setTimeout(() => {
@@ -36,6 +42,7 @@ export default function PaymentTransactionPage() {
       // Complete animation
       timeout = setTimeout(() => {
         setIsComplete(true);
+        handlePrintReceipt(); // İşlem tamamlandığında yazdırma işlemini başlat
       }, 1000);
     };
 
@@ -47,7 +54,22 @@ export default function PaymentTransactionPage() {
   // Ana menüye dönüş fonksiyonu
   const handleReturnToMenu = () => {
     clearCart();
-    router.push('/');
+    router.push('/menu');
+  };
+
+  // Yazdırma işlemi
+  const handlePrintReceipt = async () => {
+    if (isPrinting || !items.length) return;
+    
+    setIsPrinting(true);
+    try {
+      const receipt = printService.generateReceipt(items, total, orderNumber);
+      await printService.print(receipt);
+    } catch (error) {
+      console.warn('Print failed:', error);
+    } finally {
+      setIsPrinting(false);
+    }
   };
 
   // İşlem tamamlandığında sepeti temizle
@@ -57,6 +79,8 @@ export default function PaymentTransactionPage() {
     }
   }, [isComplete, clearCart]);
 
+  // ... (mevcut JSX kodunun geri kalanı aynı kalacak)
+  
   return (
     <div className="min-h-screen bg-[url('/patterns/topography.svg')] bg-fixed">
       <div className="min-h-screen backdrop-blur-xl bg-gradient-to-b from-background/95 via-background/80 to-background/95">
@@ -205,6 +229,9 @@ export default function PaymentTransactionPage() {
                       </h2>
                       <p className="text-muted-foreground text-lg">
                         Ödemeniz başarıyla tamamlandı
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Sipariş No: #{orderNumber}
                       </p>
                     </div>
 
