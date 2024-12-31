@@ -1,12 +1,13 @@
 "use client";
 
-import { useCartStore } from '@/store/cart';
+import { useCartStore } from '../../../store/cart';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CreditCard, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
 import { useState, useEffect } from 'react';
-import { printService } from '@/lib/utils/print-service';
+import { printService } from '../../../lib/utils/print-service';
+import { isElastic } from '../../../lib/utils/elastic';
 
 const STEPS = [
   { id: 1, title: "Bağlantı Kuruluyor", duration: 2000 },
@@ -84,8 +85,6 @@ export default function PaymentTransactionPage() {
       clearCart();
     }
   }, [isComplete, clearCart]);
-
-  // ... (mevcut JSX kodunun geri kalanı aynı kalacak)
   
   return (
     <div className="min-h-screen bg-[url('/patterns/topography.svg')] bg-fixed">
@@ -247,13 +246,27 @@ export default function PaymentTransactionPage() {
                       <div className="text-4xl font-bold text-primary">₺ {finalAmount.toFixed(2)}</div>
                     </div>
 
-                    {/* Return Button */}
-                    <Button
-                      className="w-full h-12 text-lg font-medium shadow-lg shadow-primary/20 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300"
-                      onClick={handleReturnToMenu}
-                    >
-                      Menüye Dön
-                    </Button>
+                    {/* Action Buttons */}
+                    <div className="space-y-3">
+                      {/* Print Button - Only show in Elastic environment */}
+                      {isElastic() && (
+                        <Button
+                          className="w-full h-12 text-lg font-medium bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all duration-300"
+                          onClick={handlePrintReceipt}
+                          disabled={isPrinting}
+                        >
+                          {isPrinting ? 'Yazdırılıyor...' : 'Fişi Yazdır'}
+                        </Button>
+                      )}
+
+                      {/* Return Button */}
+                      <Button
+                        className="w-full h-12 text-lg font-medium shadow-lg shadow-primary/20 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300"
+                        onClick={handleReturnToMenu}
+                      >
+                        Menüye Dön
+                      </Button>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
