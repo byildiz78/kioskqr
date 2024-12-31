@@ -63,7 +63,7 @@ export default function PaymentTransactionPage() {
     
     setIsPrinting(true);
     try {
-      const receipt = printService.generateReceipt(items, total, orderNumber);
+      const receipt = printService.generateReceipt(items, total);
       await printService.print(receipt);
     } catch (error) {
       console.warn('Print failed:', error);
