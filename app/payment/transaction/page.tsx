@@ -14,10 +14,11 @@ const STEPS = [
 ];
 
 export default function PaymentTransactionPage() {
-  const { total } = useCartStore();
+  const { total, clearCart } = useCartStore();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [finalAmount, setFinalAmount] = useState(total);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -42,6 +43,19 @@ export default function PaymentTransactionPage() {
 
     return () => clearTimeout(timeout);
   }, []);
+
+  // Ana menüye dönüş fonksiyonu
+  const handleReturnToMenu = () => {
+    clearCart();
+    router.push('/');
+  };
+
+  // İşlem tamamlandığında sepeti temizle
+  useEffect(() => {
+    if (isComplete) {
+      clearCart();
+    }
+  }, [isComplete, clearCart]);
 
   return (
     <div className="min-h-screen bg-[url('/patterns/topography.svg')] bg-fixed">
@@ -99,7 +113,7 @@ export default function PaymentTransactionPage() {
 
                     {/* Amount Display */}
                     <div className="text-center space-y-2 bg-white/20 rounded-2xl p-4 backdrop-blur-sm">
-                      <div className="text-3xl font-bold text-primary">₺ {total.toFixed(2)}</div>
+                      <div className="text-3xl font-bold text-primary">₺ {finalAmount.toFixed(2)}</div>
                       <div className="text-sm text-muted-foreground font-medium">İşleminiz Gerçekleştiriliyor</div>
                     </div>
 
@@ -197,13 +211,13 @@ export default function PaymentTransactionPage() {
                     {/* Amount Confirmation */}
                     <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 space-y-2">
                       <div className="text-sm text-muted-foreground font-medium">Ödenen Tutar</div>
-                      <div className="text-4xl font-bold text-primary">₺ {total.toFixed(2)}</div>
+                      <div className="text-4xl font-bold text-primary">₺ {finalAmount.toFixed(2)}</div>
                     </div>
 
                     {/* Return Button */}
                     <Button
                       className="w-full h-12 text-lg font-medium shadow-lg shadow-primary/20 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300"
-                      onClick={() => router.push('/')}
+                      onClick={handleReturnToMenu}
                     >
                       Menüye Dön
                     </Button>

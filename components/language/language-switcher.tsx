@@ -43,7 +43,7 @@ export function LanguageSwitcher() {
                 <div className="flex items-center gap-2">
                   <Globe className="w-4 h-4 text-primary" />
                   <span className="text-xs font-medium text-primary uppercase tracking-wider">
-                    Dil Seçimi
+                    Language
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export function LanguageSwitcher() {
               <div className="flex-1">
                 <div className="font-bold text-lg">{name}</div>
                 <div className="text-sm opacity-80">
-                  {currentLanguage === key ? 'Aktif Dil' : 'Dili Seç'}
+                  {currentLanguage === key ? 'Aktif Dil' : 'Choose'}
                 </div>
               </div>
               {currentLanguage === key && (
