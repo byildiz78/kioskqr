@@ -1,58 +1,54 @@
 'use client';
 
-import { CartItem } from '@/types/cart';
+import { CartItem } from '../../types/cart';
+import { isElastic } from './elastic';
 
 class PrintService {
-  isElastic: boolean = false;
+  generateReceipt(items: CartItem[], total: number): {
+    orderId: string;
+    items: Array<{
+      name: string;
+      quantity: number;
+      price: number;
+    }>;
+    total: number;
+  } {
+    // Generate a random order ID (you might want to get this from your backend)
+    const orderId = Math.floor(100000 + Math.random() * 900000).toString();
 
-  generateReceipt(items: CartItem[], total: number): string {
-    const receiptHTML = `
-      <div>
-        <div style="text-align: center; margin-bottom: 10px;">
-          ACME Restaurant
-          <br>
-          Tel: (555) 123-4567
-        </div>
-        
-        <div style="border-bottom: 1px dashed black; margin: 5px 0;"></div>
-        
-        ${items.map(item => `
-          <div style="display: flex; justify-content: space-between;">
-            <span>${item.product.name} x${item.quantity}</span>
-            <span>${(item.product.price * item.quantity).toFixed(2)}₺</span>
-          </div>
-        `).join('')}
-        
-        <div style="border-bottom: 1px dashed black; margin: 5px 0;"></div>
-        
-        <div style="display: flex; justify-content: space-between;">
-          <strong>TOPLAM</strong>
-          <strong>${total.toFixed(2)}₺</strong>
-        </div>
-        
-        <div style="text-align: center; margin-top: 10px;">
-          Bizi tercih ettiğiniz için teşekkürler!
-        </div>
-      </div>
-    `;
+    // Format items according to Elastic print format
+    const formattedItems = items.map(item => ({
+      name: item.product.name,
+      quantity: item.quantity,
+      price: item.product.price
+    }));
 
-    return receiptHTML;
+    return {
+      orderId,
+      items: formattedItems,
+      total
+    };
   }
 
-  async print(receiptHTML: string): Promise<boolean> {
-    if (!this.isElastic) {
+  async print(receiptData: ReturnType<typeof this.generateReceipt>): Promise<boolean> {
+    // Check if we're in Elastic environment
+    if (!isElastic()) {
+      console.warn('Not in Elastic environment');
+      return false;
+    }
+
+    // Check if elasticPrint is available
+    if (!window.elasticPrint) {
+      console.warn('elasticPrint not available');
       return false;
     }
 
     try {
-      window.chrome.webview.postMessage({
-        channel: 'print-request',
-        args: [receiptHTML]
-      });
-
+      // Send print request to Elastic
+      window.elasticPrint(receiptData);
       return true;
     } catch (error) {
-      console.warn('Yazdırma işlemi başarısız oldu:', error);
+      console.warn('Print failed:', error);
       return false;
     }
   }

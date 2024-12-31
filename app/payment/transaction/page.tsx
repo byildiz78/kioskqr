@@ -64,7 +64,13 @@ export default function PaymentTransactionPage() {
     setIsPrinting(true);
     try {
       const receipt = printService.generateReceipt(items, total);
-      await printService.print(receipt);
+      const success = await printService.print(receipt);
+      
+      if (!success) {
+        // Elastic ortamında değilse veya yazdırma başarısız olduysa sessizce devam et
+        // Kullanıcı deneyimini bozmamak için hata göstermeye gerek yok
+        console.warn('Printing is only available in Elastic environment');
+      }
     } catch (error) {
       console.warn('Print failed:', error);
     } finally {

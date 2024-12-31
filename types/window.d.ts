@@ -1,10 +1,15 @@
 declare global {
   interface Window {
-    chrome: {
-      webview: {
-        postMessage(message: { channel: string; args: any[] }): void;
-      };
-    };
+    elasticPrint: (data: {
+      orderId: string;
+      items: Array<{
+        name: string;
+        quantity: number;
+        price: number;
+      }>;
+      total: number;
+      notes?: string;
+    }) => void;
   }
 }
 
