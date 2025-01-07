@@ -10,29 +10,28 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { languages } from '@/lib/i18n';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Image as ImageIcon, Save, Trash2, Search } from 'lucide-react';
+import { Plus, Image as ImageIcon, Save, Trash2, Search, Filter } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const defaultBadges = {
-  tr: {
-    spicy: 'Acılı',
-    vegetarian: 'Vejetaryen',
-    glutenFree: 'Glutensiz',
-    monthlySpecial: 'Ayın Ürünü',
-    popular: 'Popüler Ürün',
-    bestSeller: 'En Çok Satan'
-  }
-};
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ProductSettings() {
-  const { products } = useMenuStore();
+  const { products, categories } = useMenuStore();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [activeLanguage, setActiveLanguage] = useState('tr');
 
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const selectedProductData = selectedProduct 
     ? products.find(p => p.id === selectedProduct)
@@ -51,15 +50,36 @@ export function ProductSettings() {
             </Button>
           </div>
 
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Ürün ara..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
-            />
+          {/* Search and Filter */}
+          <div className="space-y-3">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Ürün ara..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+
+            {/* Category Filter */}
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-muted-foreground" />
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Kategori seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tüm Kategoriler</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
@@ -89,6 +109,13 @@ export function ProductSettings() {
                   <div className="flex-1 p-2">
                     <div className="font-medium">{product.name}</div>
                     <div className="text-sm opacity-70">{product.price} ₺</div>
+                    
+                    {/* Category Badge */}
+                    <div className="mt-1">
+                      <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                        {categories.find(c => c.id === product.category)?.name || 'Kategori Yok'}
+                      </span>
+                    </div>
                     
                     {/* Badges */}
                     <div className="flex flex-wrap gap-1 mt-1">
@@ -165,11 +192,46 @@ export function ProductSettings() {
               />
             </div>
             <div className="space-y-2">
+              <Label>Kategori</Label>
+              <Select defaultValue={selectedProductData?.category}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Kategori seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Product Details */}
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="space-y-2">
               <Label>Hazırlama Süresi (dk)</Label>
               <Input 
                 type="number" 
                 placeholder="15"
                 defaultValue={selectedProductData?.prepTime}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Gramaj (g)</Label>
+              <Input 
+                type="number" 
+                placeholder="250"
+                defaultValue={selectedProductData?.weight || ''}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Kalori (kcal)</Label>
+              <Input 
+                type="number" 
+                placeholder="350"
+                defaultValue={selectedProductData?.calories}
               />
             </div>
           </div>
@@ -220,7 +282,7 @@ export function ProductSettings() {
                           </div>
                           <Input 
                             placeholder="Acılı rozet çevirisi" 
-                            defaultValue={code === 'tr' ? defaultBadges.tr.spicy : ''}
+                            defaultValue={code === 'tr' ? 'Acılı' : ''}
                           />
                         </div>
 
@@ -235,55 +297,7 @@ export function ProductSettings() {
                           </div>
                           <Input 
                             placeholder="Vejetaryen rozet çevirisi"
-                            defaultValue={code === 'tr' ? defaultBadges.tr.vegetarian : ''}
-                          />
-                        </div>
-
-                        {/* Gluten Free Badge */}
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Switch id={`glutenFree-${code}`} />
-                            <Label htmlFor={`glutenFree-${code}`}>Glutensiz</Label>
-                          </div>
-                          <Input 
-                            placeholder="Glutensiz rozet çevirisi"
-                            defaultValue={code === 'tr' ? defaultBadges.tr.glutenFree : ''}
-                          />
-                        </div>
-
-                        {/* Monthly Special Badge */}
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Switch id={`monthlySpecial-${code}`} />
-                            <Label htmlFor={`monthlySpecial-${code}`}>Ayın Ürünü</Label>
-                          </div>
-                          <Input 
-                            placeholder="Ayın ürünü rozet çevirisi"
-                            defaultValue={code === 'tr' ? defaultBadges.tr.monthlySpecial : ''}
-                          />
-                        </div>
-
-                        {/* Popular Badge */}
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Switch id={`popular-${code}`} />
-                            <Label htmlFor={`popular-${code}`}>Popüler Ürün</Label>
-                          </div>
-                          <Input 
-                            placeholder="Popüler ürün rozet çevirisi"
-                            defaultValue={code === 'tr' ? defaultBadges.tr.popular : ''}
-                          />
-                        </div>
-
-                        {/* Best Seller Badge */}
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Switch id={`bestSeller-${code}`} />
-                            <Label htmlFor={`bestSeller-${code}`}>En Çok Satan</Label>
-                          </div>
-                          <Input 
-                            placeholder="En çok satan rozet çevirisi"
-                            defaultValue={code === 'tr' ? defaultBadges.tr.bestSeller : ''}
+                            defaultValue={code === 'tr' ? 'Vejetaryen' : ''}
                           />
                         </div>
                       </div>

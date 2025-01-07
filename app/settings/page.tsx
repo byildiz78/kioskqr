@@ -32,7 +32,6 @@ const menuItems = [
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState(menuItems[0].id);
-
   const ActiveComponent = menuItems.find(item => item.id === activeTab)?.component || menuItems[0].component;
 
   return (
