@@ -37,13 +37,14 @@ export const useMenuStore = create<MenuState>()(
           const apiData = await fetchMenu();
           const { categories, products } = mapApiDataToApp(apiData);
 
-          if (!categories.length || !products.length) {
+          // Only throw if both categories and products are empty
+          if (!categories.length && !products.length) {
             throw new Error('No menu data available');
           }
 
           set({ 
-            categories, 
-            products, 
+            categories: categories.length ? categories : get().categories, 
+            products: products.length ? products : get().products, 
             isLoading: false,
             lastFetch: now,
             error: null
@@ -57,8 +58,9 @@ export const useMenuStore = create<MenuState>()(
           set({ 
             isLoading: false,
             error: errorMessage,
-            categories: currentState.categories,
-            products: currentState.products
+            // Only use empty arrays if there's no existing data
+            categories: currentState.categories.length ? currentState.categories : [],
+            products: currentState.products.length ? currentState.products : []
           });
         }
       }

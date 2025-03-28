@@ -34,15 +34,41 @@ export async function fetchMenu(): Promise<ApiCategory[]> {
 function getFallbackData(): ApiCategory[] {
   return [
     {
-      MenuGroupKey: "fallback-category",
-      MenuGroupText: "Menu",
+      MenuGroupKey: "fallback-category-1",
+      MenuGroupText: "Burgerler",
       Items: [
         {
-          MenuItemKey: "fallback-item",
-          MenuItemText: "Sample Item",
-          Description: "A sample menu item",
-          TakeOutPrice_TL: 100,
-          DeliveryPrice_TL: 100,
+          MenuItemKey: "fallback-item-1",
+          MenuItemText: "Klasik Burger",
+          Description: "Özel soslu, domates, marul ve soğanlı klasik burger",
+          TakeOutPrice_TL: 120,
+          DeliveryPrice_TL: 120,
+          Badges: [],
+          Combo: [],
+          IsMainCombo: false
+        },
+        {
+          MenuItemKey: "fallback-item-2",
+          MenuItemText: "Peynirli Burger",
+          Description: "Cheddar peyniri, özel sos, domates ve marullu burger",
+          TakeOutPrice_TL: 135,
+          DeliveryPrice_TL: 135,
+          Badges: [],
+          Combo: [],
+          IsMainCombo: false
+        }
+      ]
+    },
+    {
+      MenuGroupKey: "fallback-category-2",
+      MenuGroupText: "İçecekler",
+      Items: [
+        {
+          MenuItemKey: "fallback-item-3",
+          MenuItemText: "Kola",
+          Description: "Soğuk kola",
+          TakeOutPrice_TL: 30,
+          DeliveryPrice_TL: 30,
           Badges: [],
           Combo: [],
           IsMainCombo: false
