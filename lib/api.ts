@@ -11,25 +11,42 @@ const MENU_ENDPOINT = `${API_CONFIG.baseUrl}/getKioskMenu`;
 export async function fetchMenu(): Promise<ApiCategory[]> {
   console.log('[MENU] Başlangıç: Menu verisi çekiliyor...');
   try {
-    console.log(`[MENU] API isteği yapılıyor: ${MENU_ENDPOINT}`);
-    const response = await fetchWithRetry(MENU_ENDPOINT, {
-      method: 'POST',
-      headers: API_CONFIG.headers,
-      body: JSON.stringify({
-        currentMenuLastUpdateDateTime: "2000-01-01"
-      })
-    });
+    // Gerçek API çağrısı geçici olarak devre dışı bırakıldı
+    // console.log(`[MENU] API isteği yapılıyor: ${MENU_ENDPOINT}`);
+    // const response = await fetchWithRetry(MENU_ENDPOINT, {
+    //   method: 'POST',
+    //   headers: API_CONFIG.headers,
+    //   body: JSON.stringify({
+    //     currentMenuLastUpdateDateTime: "2000-01-01"
+    //   })
+    // });
 
-    console.log('[MENU] API yanıtı alındı, JSON işleniyor');
-    const data: MenuApiResponse = await response.json();
+    // Yerel JSON dosyasından veri yükleme - önbellek sorununu önlemek için timestamp ekliyoruz
+    const timestamp = new Date().getTime(); // Önbelleği atlatmak için
+    const jsonUrl = `/menu.json?t=${timestamp}`;
+    console.log(`[MENU] Yerel JSON dosyasından veri yükleniyor: ${jsonUrl}`);
     
-    if (!data?.d?.Menu || !Array.isArray(data.d.Menu)) {
-      console.error('[MENU] Hata: Geçersiz API yanıt formatı');
-      throw new MenuFetchError('Invalid API response format');
+    try {
+      const response = await fetch(jsonUrl);
+      
+      if (!response.ok) {
+        throw new MenuFetchError(`Yerel JSON dosyası yüklenemedi: ${response.status}`);
+      }
+      
+      const menuData = await response.json();
+      console.log('[MENU] Yerel JSON dosyası başarıyla yüklendi');
+      
+      if (!menuData?.d?.Menu || !Array.isArray(menuData.d.Menu)) {
+        console.error('[MENU] Hata: Geçersiz JSON formatı');
+        throw new MenuFetchError('Invalid JSON format in local file');
+      }
+      
+      console.log(`[MENU] Başarılı: ${menuData.d.Menu.length} kategori alındı (yerel JSON)`);
+      return menuData.d.Menu;
+    } catch (fetchError) {
+      console.error('[MENU] Yerel JSON dosyası yüklenemedi:', fetchError);
+      throw new MenuFetchError('Failed to load local JSON file');
     }
-
-    console.log(`[MENU] Başarılı: ${data.d.Menu.length} kategori alındı`);
-    return data.d.Menu;
   } catch (error) {
     console.error('[MENU] Hata: Menu çekilemedi:', handleApiError(error));
     console.log('[MENU] Yedek menu verileri kullanılıyor');
