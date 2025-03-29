@@ -9,7 +9,9 @@ import { MenuFetchError, handleApiError } from './utils/error-handling';
 const MENU_ENDPOINT = `${API_CONFIG.baseUrl}/getKioskMenu`;
 
 export async function fetchMenu(): Promise<ApiCategory[]> {
+  console.log('[MENU] Başlangıç: Menu verisi çekiliyor...');
   try {
+    console.log(`[MENU] API isteği yapılıyor: ${MENU_ENDPOINT}`);
     const response = await fetchWithRetry(MENU_ENDPOINT, {
       method: 'POST',
       headers: API_CONFIG.headers,
@@ -18,20 +20,25 @@ export async function fetchMenu(): Promise<ApiCategory[]> {
       })
     });
 
+    console.log('[MENU] API yanıtı alındı, JSON işleniyor');
     const data: MenuApiResponse = await response.json();
     
     if (!data?.d?.Menu || !Array.isArray(data.d.Menu)) {
+      console.error('[MENU] Hata: Geçersiz API yanıt formatı');
       throw new MenuFetchError('Invalid API response format');
     }
 
+    console.log(`[MENU] Başarılı: ${data.d.Menu.length} kategori alındı`);
     return data.d.Menu;
   } catch (error) {
-    console.error('Error fetching menu:', handleApiError(error));
+    console.error('[MENU] Hata: Menu çekilemedi:', handleApiError(error));
+    console.log('[MENU] Yedek menu verileri kullanılıyor');
     return getFallbackData();
   }
 }
 
 function getFallbackData(): ApiCategory[] {
+  console.log('[MENU] Yedek menu verileri oluşturuluyor');
   return [
     {
       MenuGroupKey: "fallback-category",
@@ -56,18 +63,26 @@ export function mapApiDataToApp(apiData: ApiCategory[]): {
   categories: Category[],
   products: Product[] 
 } {
+  console.log('[MENU] Başlangıç: API verileri uygulama formatına dönüştürülüyor');
+  
   if (!Array.isArray(apiData) || !apiData.length) {
+    console.error('[MENU] Hata: Geçersiz veya boş API verisi');
     throw new MenuFetchError('Invalid or empty API data');
   }
 
+  console.log(`[MENU] Kategori sayısı: ${apiData.length}`);
   const categories: Category[] = apiData.map(cat => ({
     id: cat.MenuGroupKey,
     name: cat.MenuGroupText,
     image: getNextCategoryImage()
   }));
 
-  const products: Product[] = apiData.flatMap(cat => 
-    cat.Items.map(item => {
+  let totalProducts = 0;
+  const products: Product[] = apiData.flatMap(cat => {
+    console.log(`[MENU] "${cat.MenuGroupText}" kategorisinde ${cat.Items.length} ürün işleniyor`);
+    totalProducts += cat.Items.length;
+    
+    return cat.Items.map(item => {
       const combo = item.Combo || [];
       const hasValidCombo = combo.length > 0 && combo.some(group => 
         group.Items?.length > 0
@@ -96,8 +111,9 @@ export function mapApiDataToApp(apiData: ApiCategory[]): {
       }
 
       return baseProduct;
-    })
-  );
+    });
+  });
 
+  console.log(`[MENU] Dönüştürme tamamlandı: ${categories.length} kategori, ${totalProducts} ürün`);
   return { categories, products };
 }
